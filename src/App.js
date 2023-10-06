@@ -22,6 +22,7 @@ function App() {
           <Route path="/groups" element={<Groups />} />
           <Route path="/groups/add" element={<AddGroup />} />
           <Route path="/groups/edit:id" element={<Products />} />
+          <Route path="/groups/edit:i" element={<Products />} />
         </Routes>
       </BrowserRouter>
     </div>
