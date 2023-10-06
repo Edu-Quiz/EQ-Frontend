@@ -1,6 +1,6 @@
 import axios from "axios";
 import { React, useState, useEffect } from "react";
-import { Card, Col, Row } from 'antd';
+import { Card, Space } from 'antd';
 import { Link } from "react-router-dom";
 const { Meta } = Card;
 
@@ -18,9 +18,8 @@ const GroupCards = () => {
   };
 
   return (
-    <Row gutter={16}>
+    <Space size={"middle"}>
     {groups.map((group) => (
-      <Col span={5}>
         <Link to={`/group/${group.uuid}`}>
           <Card
             hoverable
@@ -34,9 +33,8 @@ const GroupCards = () => {
             />
           </Card>
         </Link>
-      </Col>
     ))}
-    </Row>
+    </Space>
   );
 };
 

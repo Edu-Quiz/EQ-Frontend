@@ -2,11 +2,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import Login from "./components/Auth/Login";
 import Users from "./pages/Users";
-import Products from "./pages/Products";
 import AddUser from "./pages/AddUser";
 import EditUser from "./pages/EditUser";
 import Groups from "./pages/Groups";
-import AddGroup from "./pages/AddGroup";
+import AddGroup from "./pages/Groups/AddGroup";
+import ViewGroup from "./pages/Groups/ViewGroup";
 
 function App() {
   return (
@@ -18,11 +18,9 @@ function App() {
           <Route path="/users" element={<Users />} />
           <Route path="/users/add" element={<AddUser />} />
           <Route path="/users/edit/:id" element={<EditUser />} />
-          <Route path="/group/:id" element={<EditUser />} />
+          <Route path="/group/:group_id" element={<ViewGroup />} />
           <Route path="/groups" element={<Groups />} />
           <Route path="/groups/add" element={<AddGroup />} />
-          <Route path="/groups/edit:id" element={<Products />} />
-          <Route path="/groups/edit:i" element={<Products />} />
         </Routes>
       </BrowserRouter>
     </div>

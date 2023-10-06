@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Layout from "./Layout";
+import PageLayout from "./PageLayout";
 import ProductList from "../components/ProductList";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -20,9 +20,9 @@ const Products = () => {
     }
   }, [isError, navigate]);
   return (
-    <Layout>
+    <PageLayout>
       <ProductList />
-    </Layout>
+    </PageLayout>
   );
 };
 
