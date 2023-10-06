@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Layout from "./Layout";
+import PageLayout from "./PageLayout";
 import FormAddUser from "../components/Users/FormAddUser";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -23,9 +23,9 @@ const AddUser = () => {
     }
   }, [isError, user, navigate]);
   return (
-    <Layout>
+    <PageLayout>
       <FormAddUser />
-    </Layout>
+    </PageLayout>
   );
 };
 

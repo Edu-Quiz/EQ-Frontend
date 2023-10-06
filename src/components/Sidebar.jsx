@@ -1,112 +1,59 @@
-import React from "react";
+import { React, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { IoPerson, IoPricetag, IoHome, IoLogOut, IoPeopleSharp } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { LogOut, reset } from "../features/authSlice";
-
+import { DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined, UserOutlined,} from '@ant-design/icons';
+import { Layout, Menu, theme } from 'antd';
+const { Sider } = Layout;
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [collapsed, setCollapsed] = useState(false);
   const { user } = useSelector((state) => state.auth);
-
   const logout = () => {
     dispatch(LogOut());
     dispatch(reset());
     navigate("/");
   };
 
-//   return (
-//     <div>
-//       <aside className="menu pl-2 has-shadow">
-//         <p className="menu-label">General</p>
-//         <ul className="menu-list">
-//           <li>
-//             <NavLink to={"/dashboard"}>
-//               <IoHome /> Dashboard
-//             </NavLink>
-//           </li>
-//           <li>
-//             <NavLink to={"/products"}>
-//               <IoPricetag /> Cursos
-//             </NavLink>
-//           </li>
-//         </ul>
-//         {user && user.role === "admin" && (
-//           <div>
-//             <p className="menu-label">Administración</p>
-//             <ul className="menu-list">
-//               <li>
-//                 <NavLink to={"/users"}>
-//                   <IoPerson /> Usuarios
-//                 </NavLink>
-//               </li>
-//               <li>
-//                 <NavLink to={"/groups"}>
-//                   <IoPeopleSharp /> Grupos
-//                 </NavLink>
-//               </li>
-//             </ul>
-//           </div>
-//         )}
-
-//         <p className="menu-label">Configuración</p>
-//         <ul className="menu-list">
-//           <li>
-//             <button onClick={logout} className="button is-white">
-//               <IoLogOut /> Cerrar Sesión
-//             </button>
-//           </li>
-//         </ul>
-//       </aside>
-//     </div>
-//   );
-// };
-
   return (
-    <div>
-      <aside className="menu pl-2 has-shadow">
-        <p className="menu-label">General</p>
-        <ul className="menu-list">
-          <li>
+    <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+      <div className="demo-logo-vertical" />
+      <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
+        <Menu.Item key="divider" disabled>
+          General
+        </Menu.Item>
+          <Menu.Item key="1" icon={<PieChartOutlined />}>
             <NavLink to={"/dashboard"}>
-              <IoHome /> Dashboard
+              Dashboard
             </NavLink>
-          </li>
-          <li>
-            <NavLink to={"/products"}>
-              <IoPricetag /> Cursos
-            </NavLink>
-          </li>
-        </ul>
+          </Menu.Item>
         {user && user.role === "admin" && (
-          <div>
-            <p className="menu-label">Administración</p>
-            <ul className="menu-list">
-              <li>
+          <>
+            <Menu.Item key="divider" disabled>
+              Administración
+            </Menu.Item>
+              <Menu.Item key="2" icon={<PieChartOutlined />}>
                 <NavLink to={"/users"}>
-                  <IoPerson /> Usuarios
+                Usuarios
                 </NavLink>
-              </li>
-              <li>
+              </Menu.Item>
+              <Menu.Item key="3" icon={<PieChartOutlined />}>
                 <NavLink to={"/groups"}>
-                  <IoPeopleSharp /> Grupos
+                  Grupos
                 </NavLink>
-              </li>
-            </ul>
-          </div>
+              </Menu.Item>
+          </>
         )}
-
-        <p className="menu-label">Configuración</p>
-        <ul className="menu-list">
-          <li>
-            <button onClick={logout} className="button is-white">
-              <IoLogOut /> Cerrar Sesión
-            </button>
-          </li>
-        </ul>
-      </aside>
-    </div>
+        <Menu.Item key="divider" disabled>
+          Configuración
+        </Menu.Item>
+          <Menu.Item key="4" icon={<PieChartOutlined />} onClick={logout}>
+            Cerrar Sesión
+          </Menu.Item>
+      </Menu>
+    </Sider>
   );
 };
 

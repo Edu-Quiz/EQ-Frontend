@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Layout from "./Layout";
+import PageLayout from "./PageLayout";
 import GroupList from "../components/Groups/GroupList";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -20,9 +20,9 @@ const Groups = () => {
     }
   }, [isError, navigate]);
   return (
-    <Layout>
+    <PageLayout>
       <GroupList />
-    </Layout>
+    </PageLayout>
   );
 };
 

@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
-import Layout from "./Layout";
-import FormAddGroup from "../components/Groups/FormAddGroup";
+import PageLayout from "../PageLayout";
+import FormAddGroup from "../../components/Groups/FormAddGroup";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getMe } from "../features/authSlice";
+import { getMe } from "../../features/authSlice";
 
 const AddGroup = () => {
+  const { isError } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isError } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(getMe());
@@ -20,9 +20,9 @@ const AddGroup = () => {
     }
   }, [isError, navigate]);
   return (
-    <Layout>
+    <PageLayout>
       <FormAddGroup />
-    </Layout>
+    </PageLayout>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import Layout from "./Layout";
+import PageLayout from "./PageLayout";
 import Userlist from "../components/Users/Userlist";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -23,9 +23,9 @@ const Users = () => {
     }
   }, [isError, user, navigate]);
   return (
-    <Layout>
+    <PageLayout>
       <Userlist />
-    </Layout>
+    </PageLayout>
   );
 };
 
