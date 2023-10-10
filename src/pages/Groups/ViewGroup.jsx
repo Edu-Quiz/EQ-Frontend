@@ -1,10 +1,9 @@
+import axios from "axios";
+import ListAssignments from "../../components/Assignments/ListAsignments";
 import { React, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { getMe } from "../../features/authSlice";
-import PageLayout from "../PageLayout";
-import ListAssignments from "../../components/Assignments/ListAsignments";
-import axios from "axios";
 
 const ViewGroup = () => {
   const dispatch = useDispatch();
@@ -30,12 +29,12 @@ const ViewGroup = () => {
   };
 
   return (
-    <PageLayout>
+    <>
       <div>
         <h1 className="title">Grupo: {group.group_name}</h1>
       </div>
       <ListAssignments/>
-    </PageLayout>
+    </>
   );
 };
 

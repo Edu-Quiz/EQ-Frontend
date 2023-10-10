@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import PageLayout from "../PageLayout";
 import FormAddGroup from "../../components/Groups/FormAddGroup";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -19,11 +18,7 @@ const AddGroup = () => {
       navigate("/");
     }
   }, [isError, navigate]);
-  return (
-    <PageLayout>
-      <FormAddGroup />
-    </PageLayout>
-  );
+  return (<FormAddGroup />);
 };
 
 export default AddGroup;
