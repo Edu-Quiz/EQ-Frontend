@@ -18,10 +18,9 @@ const Login = () => {
     console.log(dispatch)
     console.log(navigate)
     if (user || isSuccess) {
-
       navigate("/dashboard");
     }
-    dispatch(reset());
+    // dispatch(reset());
   }, [user, isSuccess, dispatch, navigate]);
 
   const Auth = (e) => {
