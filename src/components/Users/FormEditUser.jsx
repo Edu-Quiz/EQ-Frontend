@@ -1,43 +1,61 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { App, Form, Select, Button, Input } from "antd"
 import { useNavigate, useParams } from "react-router-dom";
+const { Option } = Select
 
 const FormEditUser = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confPassword, setConfPassword] = useState("");
-  const [role, setRole] = useState("");
-  const [msg, setMsg] = useState("");
-  const navigate = useNavigate();
   const { id } = useParams();
+  const [form] = Form.useForm();
+  const navigate = useNavigate();
+  const [name, setName] = useState();
+  const [msg, setMsg] = useState("");
+  const { notification } = App.useApp();
 
   useEffect(() => {
-    const getUserById = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/users/${id}`);
-        setName(response.data.name);
-        setEmail(response.data.email);
-        setRole(response.data.role);
-      } catch (error) {
-        if (error.response) {
-          setMsg(error.response.data.msg);
-        }
-      }
-    };
     getUserById();
-  }, [id]);
+  }, [form]);
+
+  const showNotification = (e) => {
+    notification.success({
+      message: `Usuario Editado Existosamente!`,
+      description: `El Usuario: ${e.first_name} ${e.last_name} se ha modificado exitosamente`,
+      placement: 'topRight',
+    });
+  };
+
+  const getUserById = async () => {
+    try {
+      axios.get(`${process.env.REACT_APP_API_URL}/users/${id}`)
+      .then((response) => {
+        const data = response.data;
+        form.setFieldsValue({
+          first_name: data.first_name,
+          last_name: data.last_name,
+          email: data.email,
+          role: data.role,
+        });
+        setName(`${data.first_name} ${data.last_name}`)
+      })
+    } catch (error) {
+      if (error.response) {
+        setMsg(error.response.data.msg);
+      }
+    }
+  };
 
   const updateUser = async (e) => {
-    e.preventDefault();
+    console.log(e.first_name)
     try {
-      await axios.patch(`http://localhost:5000/users/${id}`, {
-        name: name,
-        email: email,
-        password: password,
-        confPassword: confPassword,
-        role: role,
+      await axios.patch(`${process.env.REACT_APP_API_URL}/users/${id}`, {
+        first_name: e.first_name,
+        last_name: e.last_name,
+        email: e.email,
+        password: e.password,
+        confPassword: e.confPassword,
+        role: e.role,
       });
+      showNotification(e);
       navigate("/users");
     } catch (error) {
       if (error.response) {
@@ -45,85 +63,43 @@ const FormEditUser = () => {
       }
     }
   };
+
   return (
     <div>
-      <h1 className="title">Users</h1>
-      <h2 className="subtitle">Update User</h2>
+      <h1 className="title">Usuarios</h1>
+      <h2 className="subtitle">Actualizar Usuario: {name}</h2>
       <div className="card is-shadowless">
         <div className="card-content">
           <div className="content">
-            <form onSubmit={updateUser}>
-              <p className="has-text-centered">{msg}</p>
-              <div className="field">
-                <label className="label">Name</label>
-                <div className="control">
-                  <input
-                    type="text"
-                    className="input"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Name"
-                  />
-                </div>
-              </div>
-              <div className="field">
-                <label className="label">Email</label>
-                <div className="control">
-                  <input
-                    type="text"
-                    className="input"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email"
-                  />
-                </div>
-              </div>
-              <div className="field">
-                <label className="label">Password</label>
-                <div className="control">
-                  <input
-                    type="password"
-                    className="input"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="******"
-                  />
-                </div>
-              </div>
-              <div className="field">
-                <label className="label">Confirm Password</label>
-                <div className="control">
-                  <input
-                    type="password"
-                    className="input"
-                    value={confPassword}
-                    onChange={(e) => setConfPassword(e.target.value)}
-                    placeholder="******"
-                  />
-                </div>
-              </div>
-              <div className="field">
-                <label className="label">Role</label>
-                <div className="control">
-                  <div className="select is-fullwidth">
-                    <select
-                      value={role}
-                      onChange={(e) => setRole(e.target.value)}
-                    >
-                      <option value="admin">Admin</option>
-                      <option value="user">User</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div className="field">
-                <div className="control">
-                  <button type="submit" className="button is-success">
-                    Update
-                  </button>
-                </div>
-              </div>
-            </form>
+            <Form form={form} onFinish={updateUser} name="validateOnly" layout="vertical" autoComplete="off">
+              <Form.Item name="first_name" label="Nombre(s)" rules={[{ required: true, message: "Porfavor, escribe un nombre para el Usuario" }]}>
+                <Input placeholder="Nombre(s)"/>
+              </Form.Item>
+              <Form.Item name="last_name" label="Apellidos" rules={[{ required: true, message: "Porfavor, escribe los apellidos para el Usuario" }]}>
+                <Input placeholder="Apellidos"/>
+              </Form.Item>
+              <Form.Item name="email" label="Correo" rules={[{ required: true, message: "Porfavor, escribe un correo para el Usuario" }]}>
+                <Input placeholder="Correo"/>
+              </Form.Item>
+              <Form.Item name="password" label="Contraseña">
+                <Input.Password placeholder="Contraseña"/>
+              </Form.Item>
+              <Form.Item name="confPassword" label="Confirmar Contraseña">
+                <Input.Password placeholder="Confirmar Contraseña"/>
+              </Form.Item>
+              <Form.Item name="role" label="Tipo de Usuario" rules={[{ required: true, message: "Porfavor, selecciona el tipo de Usuario" }]}>
+                <Select placeholder="Selecciona el tipo de Usuario">
+                  <Option key="Administrador" value="admin">Administrador</Option>
+                  <Option key="Profesor" value="Profesor">Profesor</Option>
+                  <Option key="Alumno" value="Alumno">Alumno</Option>
+                </Select>
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Actualizar
+                </Button>
+              </Form.Item>
+            </Form>
           </div>
         </div>
       </div>

@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Form, Select, Button, Input } from "antd"
 import { useNavigate } from "react-router-dom";
+import { React, useState, useEffect } from "react";
+const { Option } = Select
 
 const FormAddGroup = () => {
-  const [name, setName] = useState("");
-  const [professor_id, setProfessorID] = useState("");
-  const [msg, setMsg] = useState("");
   const navigate = useNavigate();
+  const [msg, setMsg] = useState("");
   const [professors, setProfessors] = useState([]);
+  const [students, setStudents] = useState([]);
 
   useEffect(() => {
     getProfessors();
+    getStudents();
   }, []);
 
   const getProfessors = async () => {
@@ -18,12 +20,17 @@ const FormAddGroup = () => {
     setProfessors(response.data);
   };
 
+  const getStudents = async () => {
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/students`);
+    setStudents(response.data);
+  };
+
   const createGroup = async (e) => {
-    e.preventDefault();
     try {
       await axios.post(`${process.env.REACT_APP_API_URL}/groups`, {
-        group_name: name,
-        professor_id: professor_id,
+        group_name: e.group_name,
+        professor_id: e.professor_id,
+        student_ids: e.student_ids,
       });
       navigate("/groups");
     } catch (error) {
@@ -40,44 +47,27 @@ const FormAddGroup = () => {
       <div className="card is-shadowless">
         <div className="card-content">
           <div className="content">
-            <form onSubmit={createGroup}>
-              <p className="has-text-centered">{msg}</p>
-              <div className="field">
-                <label className="label">Nombre</label>
-                <div className="control">
-                  <input
-                    type="text"
-                    className="input"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Nombre del Grupo"
-                  />
-                </div>
-              </div>
-              <div className="field">
-                <label className="label">Maestro</label>
-                <div className="control">
-                  <select
-                    type="text"
-                    className="input"
-                    // value={price}
-                    onChange={(e) => setProfessorID(e.target.value)}
-                    placeholder="Maestros"
-                  >
-                    <option value="Selecciona a un Maestro" selected disabled>-- Selecciona a un Maestro --</option>
-                    {professors.map((professor) => <option value={professor.id}>{professor.first_name} {professor.last_name}</option>)}
-                  </select>
-                </div>
-              </div>
-
-              <div className="field">
-                <div className="control">
-                  <button type="submit" className="button is-success">
-                    Save
-                  </button>
-                </div>
-              </div>
-            </form>
+            <Form onFinish={createGroup} name="validateOnly" layout="vertical" autoComplete="off">
+              <Form.Item name="group_name" label="Nombre del Grupo" rules={[{ required: true, message: "Porfavor, escribe un nombre para el grupo" }]}>
+                <Input placeholder="Nombre del Grupo"/>
+              </Form.Item>
+              <Form.Item name="professor_id" label="Profesor" rules={[{ required: true, message: "Porfavor, selecciona un profesor para el grupo" }]}>
+                <Select showSearch placeholder="Selecciona a un Profesor" optionFilterProp="children">
+                  {professors.map((professor) => <Option key={professor.id} value={professor.id}>{professor.first_name} {professor.last_name}</Option>)}
+                </Select>
+              </Form.Item>
+              <Form.Item name="student_ids" label="Estudiantes"
+              >
+                <Select mode="multiple" placeholder="Selecciona a los alumnos a ingresar">
+                  {students.map((student) => <Option key={student.id} value={student.id}>{student.first_name} {student.last_name}</Option>)}
+                </Select>
+              </Form.Item>
+              <Form.Item>
+                <Button type="primary" htmlType="submit">
+                  Crear
+                </Button>
+              </Form.Item>
+            </Form>
           </div>
         </div>
       </div>
