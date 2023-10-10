@@ -1,16 +1,21 @@
+import { Layout, Menu } from 'antd';
 import { React, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { LogOut, reset } from "../features/authSlice";
-import { DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined, UserOutlined,} from '@ant-design/icons';
-import { Layout, Menu, theme } from 'antd';
+import { useDispatch, useSelector } from "react-redux";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { PieChartOutlined, TeamOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
 const { Sider } = Layout;
 
 const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const [collapsed, setCollapsed] = useState(false);
   const { user } = useSelector((state) => state.auth);
+
+  const menuSegments = ['/dashboard', '/users', '/groups'];
+  const selectedKey = menuSegments.find((segment) => location.pathname.includes(segment));
+
   const logout = () => {
     dispatch(LogOut());
     dispatch(reset());
@@ -20,36 +25,36 @@ const Sidebar = () => {
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
       <div className="demo-logo-vertical" />
-      <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-        <Menu.Item key="divider" disabled>
+      <Menu theme="dark" selectedKeys={selectedKey ? [selectedKey] : []} mode="inline">
+        <Menu.Item key="divider-1" disabled>
           General
         </Menu.Item>
-          <Menu.Item key="1" icon={<PieChartOutlined />}>
+          <Menu.Item key="/dashboard" icon={<PieChartOutlined />}>
             <NavLink to={"/dashboard"}>
               Dashboard
             </NavLink>
           </Menu.Item>
         {user && user.role === "admin" && (
           <>
-            <Menu.Item key="divider" disabled>
+            <Menu.Item key="divider-2" disabled>
               Administración
             </Menu.Item>
-              <Menu.Item key="2" icon={<PieChartOutlined />}>
+              <Menu.Item key="/users" icon={<UserOutlined />}>
                 <NavLink to={"/users"}>
                 Usuarios
                 </NavLink>
               </Menu.Item>
-              <Menu.Item key="3" icon={<PieChartOutlined />}>
+              <Menu.Item key="/groups" icon={<TeamOutlined />}>
                 <NavLink to={"/groups"}>
                   Grupos
                 </NavLink>
               </Menu.Item>
           </>
         )}
-        <Menu.Item key="divider" disabled>
+        <Menu.Item key="divider-3" disabled>
           Configuración
         </Menu.Item>
-          <Menu.Item key="4" icon={<PieChartOutlined />} onClick={logout}>
+          <Menu.Item key="4" icon={<LogoutOutlined />} onClick={logout}>
             Cerrar Sesión
           </Menu.Item>
       </Menu>
