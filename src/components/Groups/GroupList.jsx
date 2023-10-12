@@ -12,7 +12,6 @@ const GroupList = () => {
 
   const getGroups = async () => {
     const response = await axios.get(`${process.env.REACT_APP_API_URL}/groups`);
-    console.log(response.data)
     setGroups(response.data);
   };
 
@@ -67,41 +66,6 @@ const GroupList = () => {
         + Crear Grupo
       </Link>
       <Table columns={columns} dataSource={groups} />
-      {/* <table className="table is-striped is-fullwidth">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre del Grupo</th>
-            <th>Maestro Asignado</th>
-            <th>Alumnos Inscritos</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {groups.map((group, index) => (
-            <tr key={group.uuid}>
-              <td>{index + 1}</td>
-              <td>{group.group_name}</td>
-              <td>{group.Professor.first_name} {group.Professor.last_name}</td>
-              <td>0</td>
-              <td>
-                <Link
-                  to={`/groups/edit/${group.uuid}`}
-                  className="button is-small is-info"
-                >
-                  Edit
-                </Link>
-                <button
-                  onClick={() => deleteProduct(group.uuid)}
-                  className="button is-small is-danger"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table> */}
     </div>
   );
 };

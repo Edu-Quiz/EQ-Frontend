@@ -1,23 +1,63 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { Table, Space, Button } from "antd"
+import { React, useState, useEffect } from "react";
 
 const ListAssignments = () => {
-  const [users, setUsers] = useState([]);
+  const { group_id } = useParams();
+  const [groups, setGroups] = useState([]);
 
   useEffect(() => {
-    getUsers();
+    getAssignment();
   }, []);
 
-  const getUsers = async () => {
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/users`);
-    setUsers(response.data);
+  const getAssignment = async () => {
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/assignments?group_id=${group_id}`);
+    setGroups(response.data);
   };
 
-  const deleteUser = async (userId) => {
-    await axios.delete(`${process.env.REACT_APP_API_URL}/users/${userId}`);
-    getUsers();
+  const deleteGroup = async (groupId) => {
+    await axios.delete(`${process.env.REACT_APP_API_URL}/groups/${groupId}`);
+    getAssignment();
   };
+
+  const columns = [
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
+    },
+    {
+      title: 'Nombre de la Tarea',
+      dataIndex: 'title',
+      key: 'title',
+    },
+    {
+      title: 'Categoria',
+      dataIndex: 'category',
+      key: 'category'
+    },
+    {
+      title: 'Alumnos Completados',
+      key: 'studentCount',
+      dataIndex: 'studentCount',
+    },
+    {
+      title: 'Acciones',
+      key: 'action',
+      render: (_, object) => (
+        <Space size="small">
+          <Link to={`/groups/edit/${object.uuid}`}>
+            <Button type="primary">Editar</Button>
+          </Link>
+          <Button type="primary" danger onClick={() => deleteGroup(object.uuid)}>Eliminar</Button>
+          <Link to={`/game/${object.uuid}`}>
+            <Button type="primary">Test</Button>
+          </Link>
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <div>
@@ -25,37 +65,7 @@ const ListAssignments = () => {
       <Link to="./assignment/add" className="button is-primary mb-2">
         + Crear Tarea
       </Link>
-      <table className="table is-striped is-fullwidth">
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>Nombre(s)</th>
-            <th>Apellidos</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user, index) => (
-            <tr key={user.uuid}>
-              <td>{index + 1}</td>
-              <td>{user.first_name}</td>
-              <td>{user.last_name}</td>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
-              <td>
-                <Link to={`/users/edit/${user.uuid}`} className="button is-small is-info">
-                  Edit
-                </Link>
-                <button onClick={() => deleteUser(user.uuid)} className="button is-small is-danger">
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <Table columns={columns} dataSource={groups} />
     </div>
   );
 };

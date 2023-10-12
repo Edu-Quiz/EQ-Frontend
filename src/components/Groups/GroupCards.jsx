@@ -13,7 +13,6 @@ const GroupCards = () => {
 
   const getGroups = async () => {
     const response = await axios.get(`${process.env.REACT_APP_API_URL}/groups`);
-    console.log(response.data)
     setGroups(response.data);
   };
 
@@ -24,9 +23,7 @@ const GroupCards = () => {
           <Card
             hoverable
             style={{ width: 300 }}
-            cover={
-              <img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
-            }
+            cover={<img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />}
           >
             <Meta
               title={group.group_name}

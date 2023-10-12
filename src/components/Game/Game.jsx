@@ -8,6 +8,11 @@ const Game = () => {
         frameworkUrl: "/game_binaries/Build/WebGL.framework.js",
         codeUrl: "/game_binaries/Build/WebGL.wasm",
       });
+
+      const sendData = () => {
+        unityProvider.SendMessage()
+      }
+
     
       return <Unity unityProvider={unityProvider} style={{ width: 800, height: 600 }}/>;
     }

@@ -56,8 +56,7 @@ const FormAddGroup = () => {
                   {professors.map((professor) => <Option key={professor.id} value={professor.id}>{professor.first_name} {professor.last_name}</Option>)}
                 </Select>
               </Form.Item>
-              <Form.Item name="student_ids" label="Estudiantes"
-              >
+              <Form.Item name="student_ids" label="Estudiantes">
                 <Select mode="multiple" placeholder="Selecciona a los alumnos a ingresar">
                   {students.map((student) => <Option key={student.id} value={student.id}>{student.first_name} {student.last_name}</Option>)}
                 </Select>

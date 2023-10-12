@@ -1,14 +1,13 @@
 import React, { useEffect } from "react";
-import PageLayout from "./General/PageLayout";
-import ProductList from "../components/ProductList";
+import FormAddAssignment from "../../components/Assignments/FormAddAssignment";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getMe } from "../features/authSlice";
+import { getMe } from "../../features/authSlice";
 
-const Products = () => {
+const AddAssignment = () => {
+  const { isError } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isError } = useSelector((state) => state.auth);
 
   useEffect(() => {
     dispatch(getMe());
@@ -19,11 +18,7 @@ const Products = () => {
       navigate("/");
     }
   }, [isError, navigate]);
-  return (
-    <PageLayout>
-      <ProductList />
-    </PageLayout>
-  );
+  return (<FormAddAssignment />);
 };
 
-export default Products;
+export default AddAssignment;

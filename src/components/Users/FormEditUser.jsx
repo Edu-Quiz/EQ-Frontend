@@ -45,7 +45,6 @@ const FormEditUser = () => {
   };
 
   const updateUser = async (e) => {
-    console.log(e.first_name)
     try {
       await axios.patch(`${process.env.REACT_APP_API_URL}/users/${id}`, {
         first_name: e.first_name,
