@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Form, Select, Button, Input, Skeleton } from "antd";
+import { App, Form, Select, Button, Input, Skeleton } from "antd";
 const { Option } = Select;
 
 const FormEditGroup = () => {
@@ -9,6 +9,7 @@ const FormEditGroup = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
   const [msg, setMsg] = useState();
+  const { notification } = App.useApp();
   const [group, setGroup] = useState([]);
   const [students, setStudents] = useState([]);
   const [professors, setProfessors] = useState([]);
@@ -23,6 +24,14 @@ const FormEditGroup = () => {
         }
       });
   }, [form]);
+
+  const showNotification = (e) => {
+    notification.success({
+      message: `Grupo Editado Existosamente!`,
+      description: `El Grupo: ${e.group_name} se ha editado exitosamente`,
+      placement: 'topRight',
+    });
+  };
 
   const getGroupById = async () => {
     const response = await axios.get(`${process.env.REACT_APP_API_URL}/groups/${id}`);
@@ -46,6 +55,7 @@ const FormEditGroup = () => {
         professor_id: e.professor_id,
         student_ids: e.student_ids,
       });
+      showNotification(e);
       navigate("/groups");
     } catch (error) {
       if (error.response) {

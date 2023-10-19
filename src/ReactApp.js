@@ -9,8 +9,10 @@ import EditGroup from "./pages/Groups/EditGroup";
 import ViewGroup from "./pages/Groups/ViewGroup";
 import RenderGame from './pages/Game/RenderGame';
 import AddAssignment from "./pages/Assignments/AddAssignment";
+import EditAssignment from "./pages/Assignments/EditAssignment";
 import Dashboard from "./pages/General/Dashboard";
 import PageLayout from "./pages/General/PageLayout";
+import ViewScores from './pages/Assignments/ViewScores';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function ReactApp() {
@@ -28,10 +30,12 @@ function ReactApp() {
               <Route path="/users/edit/:id" element={<EditUser />} />
               <Route path="/group/:group_id" element={<ViewGroup />} />
               <Route path="/group/:group_id/assignment/add" element={<AddAssignment />} />
+              <Route path="/group/:group_id/assignment/edit/:assignment_id" element={<EditAssignment />} />
+              <Route path="/group/:group_id/assignment/scores/:assignment_id" element={<ViewScores />} />
+              <Route path="/group/:group_id/game/:game_id" element={<RenderGame />} />
               <Route path="/groups" element={<Groups />} />
               <Route path="/groups/add" element={<AddGroup />} />
               <Route path="/groups/edit/:id" element={<EditGroup />} />
-              <Route path="/game/:id" element={<RenderGame />} />
             </Routes>
           </PageLayout>
         </App>

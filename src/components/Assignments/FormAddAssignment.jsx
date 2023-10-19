@@ -1,13 +1,22 @@
 import axios from "axios";
 import { React, useState } from "react";
-import { CloseOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from "react-router-dom";
-import { Form, Button, Input, Card, Col, Row, Select } from "antd"
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import { App, Form, Button, Input, Card, Col, Row, Select } from "antd"
 
 const FormAddAssignment = () => {
-  const { group_id } = useParams();
   const navigate = useNavigate();
+  const { group_id } = useParams();
   const [msg, setMsg] = useState("");
+  const { notification } = App.useApp();
+
+  const showNotification = (e) => {
+    notification.success({
+      message: `Tarea Actualizada Existosamente!`,
+      description: `La Tarea: ${e.assignment_name} se ha editado exitosamente`,
+      placement: 'topRight',
+    });
+  };
 
   const createGroup = async (e) => {
     try {
@@ -17,6 +26,7 @@ const FormAddAssignment = () => {
         group_uuid: group_id,
         questions: e.questions,
       });
+      showNotification(e)
       navigate(`/group/${group_id}`);
     } catch (error) {
       if (error.response) {
@@ -44,7 +54,7 @@ const FormAddAssignment = () => {
                   {(fields, { add, remove }) => (
                     <div style={{ display: 'flex', rowGap: 16, flexDirection: "column", }}>
                       {fields.map((field) => ( 
-                        <Card style={{ maxWidth: 600, }} headStyle={{backgroundColor: 'rgba(26, 112, 232)'}} size="small" title={`Pregunta ${field.name + 1}`} key={field.key} extra={ <CloseOutlined onClick={() => { remove(field.name); }}/>}>
+                        <Card style={{ maxWidth: 600, marginBottom: "15px" }} headStyle={{backgroundColor: 'rgba(26, 112, 232)', color: "white"}} size="small" title={`Pregunta ${field.name + 1}`} key={field.key} extra={ <CloseOutlined style={{color: "white"}} onClick={() => { remove(field.name); }}/>}>
                           <Form.Item name={[field.name, `question_${field.name + 1}`]}>
                             <Input />
                           </Form.Item>
@@ -81,8 +91,8 @@ const FormAddAssignment = () => {
                           </Form.Item>
                         </Card>
                       ))}
-                      <Button type="dashed" onClick={() => add()} block>
-                        + Add Item
+                      <Button type="dashed" onClick={() => add()} icon={<PlusOutlined />} block>
+                        Agregar Pregunta
                       </Button>
                     </div>
                   )}
