@@ -4,6 +4,7 @@ import { LogOut, reset } from "../features/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { PieChartOutlined, TeamOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
+import logo from "../logo.png"
 const { Sider } = Layout;
 
 const Sidebar = () => {
@@ -24,8 +25,10 @@ const Sidebar = () => {
 
   return (
     <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
-      <div className="demo-logo-vertical" />
       <Menu theme="dark" selectedKeys={selectedKey ? [selectedKey] : []} mode="inline">
+        <Menu.Item style={{ height: "0%", display: "flex", justifyContent: "center" }} key="logo" disabled>
+          <img style={{ display: "block", margin: "auto" }} src={logo}></img>
+        </Menu.Item>
         <Menu.Item key="divider-1" disabled>
           General
         </Menu.Item>

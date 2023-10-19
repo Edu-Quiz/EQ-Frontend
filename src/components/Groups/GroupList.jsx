@@ -1,59 +1,97 @@
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Table, Space, Button } from "antd"
-import { React, useState, useEffect } from "react";
+import { App, Table, Space, Button, Popconfirm, Skeleton } from "antd";
+import { QuestionCircleOutlined } from "@ant-design/icons";
+import React, { useState, useEffect } from "react";
 
 const GroupList = () => {
+  const { notification } = App.useApp();
   const [groups, setGroups] = useState([]);
+  const [confirmLoading, setConfirmLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     getGroups();
   }, []);
 
-  const getGroups = async () => {
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/groups`);
-    console.log(response.data)
-    setGroups(response.data);
+  const showNotification = (e) => {
+    notification.success({
+      message: `Grupo Eliminado Existosamente!`,
+      description: `El Grupo: ${e.group_name} se ha eliminado exitosamente`,
+      placement: "topRight",
+    });
   };
 
-  const deleteGroup = async (groupId) => {
-    await axios.delete(`${process.env.REACT_APP_API_URL}/groups/${groupId}`);
-    getGroups();
+  const getGroups = async () => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/groups`);
+      setGroups(response.data);
+    } catch (error) {
+      console.error("Error fetching groups:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOk = async (e) => {
+    setConfirmLoading(true);
+
+    try {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/groups/${e.uuid}`);
+      getGroups();
+    } catch (error) {
+      console.error("Error deleting group:", error);
+    } finally {
+      setConfirmLoading(false);
+      showNotification(e);
+    }
   };
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: 'Nombre del Grupo',
-      dataIndex: 'group_name',
-      key: 'group_name',
+      title: "Nombre del Grupo",
+      dataIndex: "group_name",
+      key: "group_name",
     },
     {
-      title: 'Profesor Asignado',
-      dataIndex: 'uuid',
-      key: 'uuid',
-      render: (_, object) => (<p>
-        {object.Professor ? `${object.Professor.first_name} ${object.Professor.last_name}` : 'N/A'}
-      </p>),
+      title: "Profesor Asignado",
+      dataIndex: "uuid",
+      key: "uuid",
+      render: (_, object) => (
+        <p>{object.Professor ? `${object.Professor.first_name} ${object.Professor.last_name}` : "N/A"}</p>
+      ),
     },
     {
-      title: 'Alumnos Inscritos',
-      key: 'studentCount',
-      dataIndex: 'studentCount',
+      title: "Alumnos Inscritos",
+      key: "studentCount",
+      dataIndex: "studentCount",
     },
     {
-      title: 'Acciones',
-      key: 'action',
+      title: "Acciones",
+      key: "action",
       render: (_, object) => (
         <Space size="small">
           <Link to={`/groups/edit/${object.uuid}`}>
             <Button type="primary">Editar</Button>
           </Link>
-          <Button type="primary" danger onClick={() => deleteGroup(object.uuid)}>Eliminar</Button>
+          <Popconfirm
+            title="Eliminar Grupo"
+            description="¿Estás seguro de eliminar este grupo?"
+            onConfirm={() => handleOk(object)}
+            okButtonProps={{ loading: confirmLoading }}
+            icon={<QuestionCircleOutlined style={{ color: "red" }} />}
+            okText="Eliminar"
+            cancelText="Cancelar"
+          >
+            <Button type="primary" danger>
+              Eliminar
+            </Button>
+          </Popconfirm>
         </Space>
       ),
     },
@@ -66,42 +104,11 @@ const GroupList = () => {
       <Link to="/groups/add" className="button is-primary mb-2">
         + Crear Grupo
       </Link>
-      <Table columns={columns} dataSource={groups} />
-      {/* <table className="table is-striped is-fullwidth">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Nombre del Grupo</th>
-            <th>Maestro Asignado</th>
-            <th>Alumnos Inscritos</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {groups.map((group, index) => (
-            <tr key={group.uuid}>
-              <td>{index + 1}</td>
-              <td>{group.group_name}</td>
-              <td>{group.Professor.first_name} {group.Professor.last_name}</td>
-              <td>0</td>
-              <td>
-                <Link
-                  to={`/groups/edit/${group.uuid}`}
-                  className="button is-small is-info"
-                >
-                  Edit
-                </Link>
-                <button
-                  onClick={() => deleteProduct(group.uuid)}
-                  className="button is-small is-danger"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table> */}
+      {isLoading ? (
+        <Skeleton active />
+      ) : (
+        <Table columns={columns} dataSource={groups} />
+      )}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getMe } from "../../features/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import Userlist from "../../components/Users/Userlist";
+import UserList from "../../components/Users/UserList";
 
 const Users = () => {
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ const Users = () => {
     }
   }, [isError, user, navigate]);
   
-  return (<Userlist />);
+  return (<UserList />);
 };
 
 export default Users;

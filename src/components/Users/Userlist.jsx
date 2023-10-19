@@ -1,14 +1,14 @@
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { React,useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { QuestionCircleOutlined } from '@ant-design/icons';
-import { App, Table, Space, Button, Popconfirm } from "antd";
+import { App, Table, Space, Button, Popconfirm, Skeleton } from "antd";
 
-const Userlist = () => {
+const UserList = () => {
   const { notification } = App.useApp();
   const [users, setUsers] = useState([]);
-  const [openStates, setOpenStates] = useState([]);
   const [confirmLoading, setConfirmLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
     getUsers();
@@ -23,41 +23,14 @@ const Userlist = () => {
   };
 
   const getUsers = async () => {
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/users`);
-    setUsers(response.data);
-    setOpenStates(new Array(response.data.length).fill(false));
-  };
-
-  const showPopconfirm = (index) => {
-    setOpenStates((prevOpenStates) => {
-      const newState = [...prevOpenStates];
-      newState[index] = true;
-      return newState;
-    });
-  };
-
-  const handleOk = async (index, e) => {
-    setConfirmLoading(true);
-
-    await axios.delete(`${process.env.REACT_APP_API_URL}/users/${users[index].uuid}`);
-    getUsers();
-
-    setOpenStates((prevOpenStates) => {
-      const newState = [...prevOpenStates];
-      newState[index] = false;
-      return newState;
-    });
-
-    setConfirmLoading(false);
-    showNotification(e)
-  };
-
-  const handleCancel = (index) => {
-    setOpenStates((prevOpenStates) => {
-      const newState = [...prevOpenStates];
-      newState[index] = false;
-      return newState;
-    });
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/users`);
+      setUsers(response.data);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const columns = [
@@ -85,7 +58,7 @@ const Userlist = () => {
     {
       title: 'Acciones',
       key: 'action',
-      render: (_, object, index) => (
+      render: (_, object) => (
         <Space size="small">
           <Link to={`/users/edit/${object.uuid}`}>
             <Button type="primary">Editar</Button>
@@ -93,20 +66,28 @@ const Userlist = () => {
           <Popconfirm
             title="Eliminar Usuario"
             description="¿Estas seguro de eliminar este usuario?"
-            open={openStates[index]}
-            onConfirm={() => handleOk(index, object)}
+            onConfirm={() => handleOk(object)}
             okButtonProps={{ loading: confirmLoading }}
-            onCancel={() => handleCancel(index)}
             icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
             okText="Eliminar"
             cancelText="Cancelar"
           >
-            <Button type="primary" danger onClick={() => showPopconfirm(index)}>Eliminar</Button>
+            <Button type="primary" danger>Eliminar</Button>
           </Popconfirm>
         </Space>
       ),
     },
   ];
+
+  const handleOk = async (e) => {
+    setConfirmLoading(true);
+
+    await axios.delete(`${process.env.REACT_APP_API_URL}/users/${e.uuid}`);
+    getUsers();
+
+    setConfirmLoading(false);
+    showNotification(e);
+  };
 
   return (
     <div>
@@ -115,9 +96,13 @@ const Userlist = () => {
       <Link to="/users/add" className="button is-primary mb-2">
         + Crear Usuario
       </Link>
-      <Table columns={columns} dataSource={users} />
+      {isLoading ? (
+        <Skeleton active />
+      ) : (
+        <Table columns={columns} dataSource={users} />
+      )}
     </div>
   );
 };
 
-export default Userlist;
+export default UserList;
